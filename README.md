@@ -1,1 +1,3 @@
-# loans-kit-poc
+# LoansKit
+
+A description of this package.
