@@ -1,15 +1,13 @@
 import UIKit
 
-public final class TutorialComposer {
-    public static func startScene(at navigation: UINavigationController) {
+internal final class TutorialComposer {
+    internal static func startScene(at navigation: UINavigationController) -> ChildCoordinator {
+        let service = TutorialService()
         let coordinator = TutorialCoordinator(from: navigation)
-        let service = TutorialService(networkManager: <#T##<<error type>>#>)
-        let viewModel = TutorialViewModel(coordinator: coordinator,
-                                          service: service,
-                                          analytics: <#T##<<error type>>#>,
-                                          store: <#T##<<error type>>#>)
-        let viewController = TutorialViewController(with: viewModel)
-
+        let viewModel = TutorialViewModel(service: service)
+        let viewController = TutorialViewController(with: viewModel, coordinator)
+        
         coordinator.start(viewController)
+        return coordinator
     }
 }
