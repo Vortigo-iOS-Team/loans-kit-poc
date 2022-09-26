@@ -1,18 +1,30 @@
-protocol TutorialServiceProtocol {
-    func fetchTutorial(completion: @escaping (TutorialModel?, Error?) -> Void)
-}
+//
+//  TutorialService.swift
+//  LoansKit
+//
+//  Created by Douglas Pfeifer on 25/09/22.
+//
 
-final class TutorialService {
-    private let networkManager: NetworkManagerProtocol
+import Foundation
 
-    init(networkManager: NetworkManagerProtocol) {
-        self.networkManager = networkManager
+internal class TutorialService: BaseService {
+    private let baseUrl: URL
+    private let client: HTTPClient
+    
+    internal init(client: HTTPClient = URLSessionHTTPClient()) {
+        self.baseUrl = Environment.getUrl(for: .tutorial, .dev)
+        self.client = client
     }
-}
-
-extension TutorialService: ListServiceProtocol {
-    func fetchTutorial(completion: @escaping (TutorialModel?, Error?) -> Void) {
-        completion(nil, nil)
-        // call network kit and request data
+    
+    internal func fetchTutorial(completion: @escaping (Result) -> Void) {
+        client.get(from: baseUrl) { [weak self] result in
+            guard self != nil else { return }
+            switch result {
+            case let .success(data, response):
+                completion(ResultMapper.map(data, from: response, to: TutorialModel.self))
+            case let .failure(error as NSError):
+                completion(ResultMapper.map(error))
+            }
+        }
     }
 }

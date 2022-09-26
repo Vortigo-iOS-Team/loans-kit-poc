@@ -1,4 +1,4 @@
-struct TutorialModel {
+struct TutorialModel: Decodable, Equatable {
     let title: String
 }
 
